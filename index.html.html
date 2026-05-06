@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Оставить комментарий к видео</title>
+    <style>
+        body { font-family: Arial; max-width: 500px; margin: 50px auto; padding: 20px; }
+        input, button { padding: 10px; margin: 10px 0; width: 100%; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; }
+        .message { display: none; background: #d4edda; padding: 10px; margin-top: 10px; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+<h2>🎬 Видео доступно после комментария</h2>
+<p>Напишите что угодно (например, «супер», «хочу посмотреть»), и видео откроется 👇</p>
+
+<input type="text" id="comment" placeholder="Ваш комментарий...">
+<button onclick="sendAndOpen()">Отправить и смотреть видео</button>
+
+<div id="videoBlock" style="display:none; margin-top:20px;">
+    <video controls width="100%">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+    </video>
+</div>
+<div id="status" class="message"></div>
+
+<script>
+// ⚠️ ЗАМЕНИТЕ НА ВАШИ ДАННЫЕ
+const BOT_TOKEN = "ВАШ_ТОКЕН_ОТ_BOTFATHER";
+const CHAT_ID   = "ВАШ_ID_ИЗ_USERINFOBOT";
+
+async function sendAndOpen() {
+    let comment = document.getElementById('comment').value.trim();
+    if (comment === "") {
+        alert("Напишите хотя бы слово!");
+        return;
+    }
+
+    // Отправляем комментарий в Telegram
+    let url = https://api.telegram.org/bot${BOT_TOKEN}/sendMessage;
+    let text = 📝 Новый комментарий:\n"${comment}";
+
+    try {
+        let response = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: CHAT_ID, text: text })
+        });
+        let result = await response.json();
+        if (result.ok) {
+            document.getElementById('status').innerHTML = "✅ Комментарий отправлен! Видео открыто.";
+            document.getElementById('videoBlock').style.display = "block";
+            document.getElementById('status').style.display = "block";
+        } else {
+            alert("Ошибка отправки (но видео всё равно открыто)");
+            document.getElementById('videoBlock').style.display = "block";
+        }
+    } catch(e) {
+        alert("Ошибка соединения, но видео открыто");
+        document.getElementById('videoBlock').style.display = "block";
+    }
+}
+</script>
+</body>
+</html>
